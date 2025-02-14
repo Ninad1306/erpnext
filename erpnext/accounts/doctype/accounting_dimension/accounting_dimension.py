@@ -7,6 +7,7 @@ import json
 import frappe
 from frappe import _, scrub
 from frappe.custom.doctype.custom_field.custom_field import create_custom_field
+from frappe.database.schema import validate_column_name
 from frappe.model import core_doctypes_list
 from frappe.model.document import Document
 from frappe.utils import cstr
@@ -48,6 +49,7 @@ class AccountingDimension(Document):
 			"Accounting Dimension Detail",
 			"Company",
 			"Account",
+			"Finance Book",
 		):
 			msg = _("Not allowed to create accounting dimension for {0}").format(self.document_type)
 			frappe.throw(msg)
@@ -60,6 +62,7 @@ class AccountingDimension(Document):
 		if not self.is_new():
 			self.validate_document_type_change()
 
+		validate_column_name(self.fieldname)
 		self.validate_dimension_defaults()
 
 	def validate_document_type_change(self):

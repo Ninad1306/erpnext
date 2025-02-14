@@ -11,6 +11,7 @@ erpnext.assets.AssetCapitalization = class AssetCapitalization extends erpnext.s
 
 	onload() {
 		this.setup_queries();
+		erpnext.accounts.dimensions.setup_dimension_filters(this.frm, this.frm.doctype);
 	}
 
 	refresh() {
@@ -35,11 +36,7 @@ erpnext.assets.AssetCapitalization = class AssetCapitalization extends erpnext.s
 		me.setup_warehouse_query();
 
 		me.frm.set_query("target_item_code", function () {
-			if (me.frm.doc.entry_type == "Capitalization") {
-				return erpnext.queries.item({ is_stock_item: 0, is_fixed_asset: 1 });
-			} else {
-				return erpnext.queries.item({ is_stock_item: 1, is_fixed_asset: 0 });
-			}
+			return erpnext.queries.item({ is_stock_item: 0, is_fixed_asset: 1 });
 		});
 
 		me.frm.set_query("target_asset", function () {
@@ -50,7 +47,7 @@ erpnext.assets.AssetCapitalization = class AssetCapitalization extends erpnext.s
 
 		me.frm.set_query("asset", "asset_items", function () {
 			var filters = {
-				status: ["not in", ["Draft", "Scrapped", "Sold", "Capitalized", "Decapitalized"]],
+				status: ["not in", ["Draft", "Scrapped", "Sold", "Capitalized"]],
 				docstatus: 1,
 			};
 

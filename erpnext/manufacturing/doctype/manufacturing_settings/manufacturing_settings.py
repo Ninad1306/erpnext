@@ -33,11 +33,17 @@ class ManufacturingSettings(Document):
 		mins_between_operations: DF.Int
 		overproduction_percentage_for_sales_order: DF.Percent
 		overproduction_percentage_for_work_order: DF.Percent
-		set_op_cost_and_scrape_from_sub_assemblies: DF.Check
+		set_op_cost_and_scrap_from_sub_assemblies: DF.Check
 		update_bom_costs_automatically: DF.Check
+		validate_components_quantities_per_bom: DF.Check
 	# end: auto-generated types
 
-	pass
+	def before_save(self):
+		self.reset_values()
+
+	def reset_values(self):
+		if self.backflush_raw_materials_based_on != "BOM" and self.validate_components_quantities_per_bom:
+			self.validate_components_quantities_per_bom = 0
 
 
 def get_mins_between_operations():
